@@ -90,5 +90,25 @@
     <input type="file" name="folder" webkitdirectory>
   </div>
 
+  <button onclick="send()">send data</button>
+
+  <script>
+    function send(){
+      try {
+        let random = Math.random() * 100 << 0;
+        sendToFlutter.postMessage("test-number: " + random);
+      } catch (e) {
+        console.warn("sendToFlutter not available:", e);
+      }
+    }
+
+    
+  function sendToWebView(msg) {
+    alert("Flutter replied: " + msg);
+    console.log("Flutter replied:", msg);
+  }
+</script>
+
+  
 </body>
 </html>
