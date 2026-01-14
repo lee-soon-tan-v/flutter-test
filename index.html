@@ -1,75 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive File Upload</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .upload-container {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 15px;
-        }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        @media (max-width: 480px) {
-            .upload-container {
-                padding: 15px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All File Input Types</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h2 { margin-top: 30px; }
+    .input-container {
+      background: #fff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    input { width: 100%; padding: 10px; margin-top: 5px; }
+  </style>
 </head>
 <body>
 
-    <form class="upload-container" action="#" method="post" enctype="multipart/form-data">
-        <h2>Upload File</h2>
+  <h1>File Input Types Test</h1>
 
-        <input type="file" name="file" required>
+  <!-- Single file -->
+  <div class="input-container">
+    <h2>Single File</h2>
+    <input type="file" name="single-file">
+  </div>
 
-        <button type="submit">Upload</button>
-    </form>
+  <!-- Multiple files -->
+  <div class="input-container">
+    <h2>Multiple Files</h2>
+    <input type="file" name="multiple-files" multiple>
+  </div>
+
+  <!-- Images only -->
+  <div class="input-container">
+    <h2>Images Only</h2>
+    <input type="file" name="images-only" accept="image/*" multiple>
+  </div>
+
+  <!-- Videos only -->
+  <div class="input-container">
+    <h2>Videos Only</h2>
+    <input type="file" name="videos-only" accept="video/*" multiple>
+  </div>
+
+  <!-- PDFs only -->
+  <div class="input-container">
+    <h2>PDF Only</h2>
+    <input type="file" name="pdf-only" accept=".pdf">
+  </div>
+
+  <!-- Images + camera -->
+  <div class="input-container">
+    <h2>Camera Capture (Image)</h2>
+    <input type="file" name="camera-image" accept="image/*" capture="camera">
+  </div>
+
+  <!-- Video capture -->
+  <div class="input-container">
+    <h2>Camera Capture (Video)</h2>
+    <input type="file" name="camera-video" accept="video/*" capture="camcorder">
+  </div>
+
+  <!-- Audio capture -->
+  <div class="input-container">
+    <h2>Microphone Capture (Audio)</h2>
+    <input type="file" name="audio" accept="audio/*" capture="microphone">
+  </div>
+
+  <!-- Multiple types -->
+  <div class="input-container">
+    <h2>Custom File Types</h2>
+    <input type="file" name="custom-types" accept=".jpg,.png,.pdf,.txt" multiple>
+  </div>
+
+  <!-- Folder selection (desktop only) -->
+  <div class="input-container">
+    <h2>Folder Selection (Desktop Only)</h2>
+    <input type="file" name="folder" webkitdirectory>
+  </div>
 
 </body>
 </html>
