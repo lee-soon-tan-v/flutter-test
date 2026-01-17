@@ -28,6 +28,11 @@
 </head>
 <body>
 
+  <a href="#/">Home</a>
+  <a href="#/about">About</a>
+  <section id="app"></section>
+
+  
   <h1>File Input Types Test</h1>
 
   <!-- Single file -->
@@ -109,6 +114,120 @@
   }
 </script>
 
+
+
+
+  
+  <script>
+  let currentPath = '/';
+  let prevPath = '';
+  
+    const app = document.getElementById('app');
+    let currentCleanup = null;
+
+    function home() {
+      app.innerHTML = '<h2>Home</h2>';
+      return () => {};
+    }
+
+    function about() {
+      app.innerHTML = '<h2>About</h2>';
+      return () => {};
+    }
+
+    function showExit() {
+      app.innerHTML = `
+        <h2>Exit?</h2>
+        <p>Press back again to leave.</p>
+        <button id="stay">Stay</button>
+      `;
+
+      document.getElementById('stay').onclick = () => {
+        history.replaceState({ page: '/' }, '', '#/');
+        home();
+      };
+    }
+
+    const routes = {
+      '/': home,
+      '/about': about
+    };
+
+    function render(path) {
+      if (currentCleanup) currentCleanup();
+
+      const route = routes[path];
+      if (!route) {
+        app.innerHTML = '<h2>404</h2>';
+        return;
+      }
+
+      currentCleanup = route();
+    }
+
+    function navigate(path) { 
+		prevPath = currentPath;
+		currentPath = path;
+		
+		console.log('currentPath ' + currentPath);
+		console.log('prevPath ' + prevPath);
+	
+	if(currentPath == '/about'){
+        history.pushState({ page: path }, '', `#${path}`);
+	}else if(currentPath == '/') {
+        history.replaceState({ page: '/' }, '', '#/');
+	}
+	return;
+      // IMPORTANT PART
+      if (path === '/') {
+        // overwrite history → remove /about
+        history.replaceState({ page: '/' }, '', '#/');
+      } else {
+        history.pushState({ page: path }, '', `#${path}`);
+      }
+      render(path);
+    }
+
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#/"]');
+      if (!a) return;
+
+      e.preventDefault();
+      navigate(a.getAttribute('href').slice(1));
+    });
+
+    window.addEventListener('popstate', (event) => {
+	console.log('history:' + prevPath)
+	console.log(event.state);
+	if(event.state == null || event.state?.page !== prevPath) {
+		let result = confirm('exit');
+		if(result) console.log('exit') 
+		else history.pushState({ page: '/' }, '', `#/`);
+	}
+	
+	return;
+	
+      // if back is pressed while on home → exit
+      if (location.hash === '#/' || location.hash === '') {
+        history.replaceState({ page: '/' }, '', '#/');
+        showExit();
+        return;
+      }
+
+      render(location.hash.slice(1));
+    });
+
+    // initial load
+    //history.replaceState({ page: '/' }, '', '#/');
+	
+	
+    render('/');
+		history.pushState({ page: '/' }, '', `#/`);
+		console.log(history)
+	
+
+  </script>
+  
   
 </body>
 </html>
