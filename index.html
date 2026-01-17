@@ -177,6 +177,7 @@
 	}else if(currentPath == '/') {
         history.replaceState({ page: '/' }, '', '#/');
 	}
+      render(path);
 	return;
       // IMPORTANT PART
       if (path === '/') {
