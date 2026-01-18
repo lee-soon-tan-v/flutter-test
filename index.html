@@ -95,13 +95,17 @@
     <input type="file" name="folder" webkitdirectory>
   </div>
 
-  <button onclick="send()">send data</button>
+  <button onclick="sendToFlutter()">send data</button>
 
   <script>
-    function send(){
+    function sendToFlutter(msg){
       try {
-        let random = Math.random() * 100 << 0;
-        sendToFlutter.postMessage("test-number: " + random);
+		  if(!msg){
+	        let random = Math.random() * 100 << 0;
+	        sendToFlutter.postMessage("test-number: " + random);
+		  }else{
+	        sendToFlutter.postMessage("exit");
+		  }
       } catch (e) {
         console.warn("sendToFlutter not available:", e);
       }
@@ -112,13 +116,14 @@
     alert("Flutter replied: " + msg);
     console.log("Flutter replied:", msg);
   }
-</script>
 
 
 
 
-  
-  <script>
+
+
+
+	  
   let currentPath = '/';
   let prevPath = '';
   
@@ -202,9 +207,10 @@
 	console.log(event.state);
 	if(event.state == null || event.state?.page !== prevPath) {
 		let result = confirm('exit');
-		if(result) console.log('exit') 
+		if(result) {console.log('exit');sendToFlutter('exit'); }
 		else history.pushState({ page: '/' }, '', `#/`);
 	}
+    render('/');
 	
 	return;
 	
