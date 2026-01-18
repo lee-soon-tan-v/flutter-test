@@ -129,7 +129,7 @@
 	  }
 
 	  
-    
+    // Message send to Flutter
     function send(msg){
       try {
 	    sendToFlutter.postMessage(msg);
@@ -138,9 +138,20 @@
       }
     }
 
-    
+    // Message received from Flutter
   function sendToWebView(msg) {
     alert("Flutter replied: " + JSON.stringify(msg));
+
+	  if(typeof msg === 'object'){
+		if(msg?.action === 'confirm-dialog' && msg?.data === 'exit-app'){
+		  	if(msg?.confirm) {
+				send(JSON.stringify({'action': 'exit'})); 
+			}else {
+				history.pushState({ page: '/' }, '', `#/`);
+			}
+		}
+  	}
+  
     console.log("Flutter replied:", msg);
   }
 
@@ -225,18 +236,27 @@
     });
 
 
-
+	
+	
     window.addEventListener('popstate', (event) => {
 		
 		// Check if previous page is Home
 		if(currentHistory.at(-1) === '/' || !currentHistory.at(-1)){
-			let result = confirm('exit');
-			if(result) {
-				console.log('exit');
-				send(JSON.stringify({'action': 'exit'})); 
-			}else {
-				history.pushState({ page: '/' }, '', `#/`);
-			}
+			//let result = confirm('exit');
+			let result = send(JSON.stringify({
+				'action': 'confirm-dialog',
+				'title': 'Exit Alert',
+				'content': 'Do you want to exit?',
+				'okText': 'YES',
+				'cancelText': 'NO',
+				'data': 'exit-app'
+			}));
+			// if(result) {
+			// 	console.log('exit');
+			// 	send(JSON.stringify({'action': 'exit'})); 
+			// }else {
+			// 	history.pushState({ page: '/' }, '', `#/`);
+			// }
 		}else{
 			currentHistory.pop();
 			// Render new page
