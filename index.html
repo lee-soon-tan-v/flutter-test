@@ -30,6 +30,7 @@
 
   <a href="#/">Home</a>
   <a href="#/about">About</a>
+  <a href="#/profile">Profile</a>
   <section id="app"></section>
 
   
@@ -124,8 +125,8 @@
 
 
 	  
-  let currentPath = '/';
-  let prevPath = '';
+  let currentHistory = [];
+	
   
     const app = document.getElementById('app');
     let currentCleanup = null;
@@ -140,22 +141,16 @@
       return () => {};
     }
 
-    function showExit() {
-      app.innerHTML = `
-        <h2>Exit?</h2>
-        <p>Press back again to leave.</p>
-        <button id="stay">Stay</button>
-      `;
-
-      document.getElementById('stay').onclick = () => {
-        history.replaceState({ page: '/' }, '', '#/');
-        home();
-      };
+    function profile() {
+      app.innerHTML = '<h2>Profile</h2>';
+      return () => {};
     }
+
 
     const routes = {
       '/': home,
-      '/about': about
+      '/about': about,
+      '/profile': profile,
     };
 
     function render(path) {
@@ -171,27 +166,24 @@
     }
 
     function navigate(path) { 
-		prevPath = currentPath;
-		currentPath = path;
+		currentHistory.push(path);
 		
-		console.log('currentPath ' + currentPath);
-		console.log('prevPath ' + prevPath);
+		switch(path){
+			case '/profile':
+				history.pushState({ page: path }, '', `#${path}`);
+			break;
+			case '/about':
+				history.pushState({ page: path }, '', `#${path}`);
+			break;
+			case '/':
+				history.replaceState({ page: '/' }, '', '#/');
+			break;
+				console.log('path nt found: ' + currentPath)
+			default:
+			
+		}
 	
-	if(currentPath == '/about'){
-        history.pushState({ page: path }, '', `#${path}`);
-	}else if(currentPath == '/') {
-        history.replaceState({ page: '/' }, '', '#/');
-	}
-      render(path);
-	return;
-      // IMPORTANT PART
-      if (path === '/') {
-        // overwrite history → remove /about
-        history.replaceState({ page: '/' }, '', '#/');
-      } else {
-        history.pushState({ page: path }, '', `#${path}`);
-      }
-      render(path);
+		render(path);
     }
 
     document.addEventListener('click', (e) => {
@@ -202,36 +194,33 @@
       navigate(a.getAttribute('href').slice(1));
     });
 
-    window.addEventListener('popstate', (event) => {
-	console.log('history:' + prevPath)
-	console.log(event.state);
-	if(event.state == null || event.state?.page !== prevPath) {
-		let result = confirm('exit');
-		if(result) {console.log('exit');send('exit'); }
-		else history.pushState({ page: '/' }, '', `#/`);
-	}
-    render('/');
-	
-	return;
-	
-      // if back is pressed while on home → exit
-      if (location.hash === '#/' || location.hash === '') {
-        history.replaceState({ page: '/' }, '', '#/');
-        showExit();
-        return;
-      }
 
-      render(location.hash.slice(1));
+
+    window.addEventListener('popstate', (event) => {
+		
+		// Check if previous page is Home
+		if(currentHistory.at(-1) === '/' || !currentHistory.at(-1)){
+			let result = confirm('exit');
+			if(result) {
+				console.log('exit');
+				send('exit'); 
+			}else {
+				history.pushState({ page: '/' }, '', `#/`);
+			}
+		}else{
+			currentHistory.pop();
+			// Render new page
+			console.log('render')
+			render(currentHistory.at(-1));
+		}
+	
     });
 
-    // initial load
-    //history.replaceState({ page: '/' }, '', '#/');
 	
-	
+	// Initial load
     render('/');
-		history.pushState({ page: '/' }, '', `#/`);
-		console.log(history)
-	
+	history.pushState({ page: '/' }, '', `#/`);
+	currentHistory.push('/');
 
   </script>
   
