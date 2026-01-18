@@ -239,7 +239,7 @@
 	
 	
     window.addEventListener('popstate', (event) => {
-		
+		if(currentHistory.length === 1){alert('a')}
 		// Check if previous page is Home
 		if(currentHistory.at(-1) === '/' || !currentHistory.at(-1)){
 			//let result = confirm('exit');
