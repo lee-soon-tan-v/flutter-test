@@ -207,6 +207,9 @@
     }
 
     function navigate(path) { 
+		// Do nothing if on the same path
+		if(currentHistory.at(-1) === path) return;
+		
 		currentHistory.push(path);
 		
 		switch(path){
