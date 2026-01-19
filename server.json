@@ -1,0 +1,8 @@
+{
+  "spaVersion": 1,
+  "uis": [
+    { "id": "main", "version": 1 },
+    { "id": "ui1", "version": 1 },
+    { "id": "ui2", "version": 2, "files": [ { "name": "ui2.html", "sha256": "abc..." }, { "name": "ui2.js", "sha256": "def..." } ] }
+  ]
+}
