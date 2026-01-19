@@ -109,7 +109,16 @@
 	
 	<br><br>
   <button onclick="scanBarcode()">barcode</button>
+	<br><br>
+  <button onclick="getVersion()">get version</button>
   <script>
+
+	  function getVersion(){
+		send(JSON.stringify({
+			'action': 'get-ui-version',
+		}));
+	  }
+	  
 	function testDialog(){
 		send(JSON.stringify({
 			'action': 'confirm-dialog',
@@ -245,8 +254,8 @@
 		//if(currentHistory.length === 1){alert('a')}
 		// Check if previous page is Home
 		if(currentHistory.at(-1) === '/' || !currentHistory.at(-1)){
-			//let result = confirm('exit');
-			let result = send(JSON.stringify({
+			// Show confirm dialog via flutter native api
+			send(JSON.stringify({
 				'action': 'confirm-dialog',
 				'title': 'Exit Alert',
 				'content': 'Do you want to exit?',
