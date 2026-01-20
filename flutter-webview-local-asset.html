@@ -108,10 +108,12 @@
   function requestToGoBack(){
     if (window.history.length > 1) {
       window.history.back();
+      // Condition for Home -> Other Pages -> Home -> BackButton()
       if(currentHistory.length === 1){
         requestToExit();
       }
     } else 
+      // Condition for Home -> BackButton()
       requestToExit();
   }
 	
