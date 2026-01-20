@@ -1,0 +1,120 @@
+<!-- assets/html/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebView SPA</title>
+</head>
+<body>
+  Handles the back button and invoke proper exit-app function
+  <div id="content">Home</div>
+
+  <button onclick="navigate('#/banner-1')">Go to Banner 1</button>
+  <button onclick="navigate('#/banner-2')">Go to Banner 2</button>
+  <button onclick="navigate('#/')">Go to Home</button>
+
+  <script>
+  let currentHistory = [];
+  let pendingPromiseRequests = {};
+  let currentHistoryLength = 0;
+  
+    function navigate(hash) {
+      window.location.hash = hash;
+	  //console.log('push: ' + hash);
+    }
+
+    function render(data) {
+		// New navigation
+		if(currentHistoryLength != history.length){
+			currentHistoryLength = history.length;
+      alert('new');
+      alert('arr len: ' + currentHistory.length);
+			currentHistory.push(window.location.hash);console.log('push' + window.location.hash)
+      alert('arr content: ' + JSON.stringify(currentHistory));
+		}else{
+      alert('pop');
+      alert('arr len: ' + currentHistory.length);
+      currentHistory.pop();
+      alert('arr len: ' + currentHistory.length);
+      alert('arr content: ' + JSON.stringify(currentHistory));
+		}
+      const content = document.getElementById('content');
+
+	  console.log('rendering + ' + window.location.hash);
+      switch(window.location.hash) {
+        case '#/banner-1':
+          content.innerHTML = 'Banner 1';
+          break;
+        case '#/banner-2':
+          content.innerHTML = 'Banner 2';
+          break;
+        default:
+          content.innerHTML = 'Home';
+      }
+    }
+
+    // Handle hash changes from back button
+    window.addEventListener('hashchange', render);
+	
+	//currentHistory.push('#/');
+    navigate('#/');
+	
+	//window.addEventListener('popstate', (event) => {console.log(event)});
+
+
+
+    // Message send to Flutter
+    function send(msg){
+      try {
+        alert("Sending: " + msg);
+	      sendToFlutter.postMessage(msg);
+      } catch (e) {
+        console.warn("sendToFlutter not available:", e);
+      }
+    }
+
+    async function sendToFlutterWithPromise(json){
+      return new Promise((resolve, reject) => {
+        json.id = crypto.randomUUID();
+        pendingPromiseRequests[json.id] = { resolve, reject };
+        send(JSON.stringify(json));
+      });
+    }
+
+    // Message received from Flutter
+    function sendToWebView(msg) {
+      alert("Flutter replied: " + JSON.stringify(msg));
+
+      if(typeof msg === 'object') {
+        if(msg?.action === 'confirm-dialog' && msg?.id){
+          pendingPromiseRequests[msg.id]?.resolve(msg);
+        }else if(msg?.action === 'get-ui' && msg?.fileName && msg?.data && msg?.id){
+          pendingPromiseRequests[msg.id]?.resolve(msg);
+        }
+      }
+    
+      console.log("Flutter replied:", msg);
+    }
+
+  function requestToExit () {
+    sendToFlutterWithPromise({
+				'action': 'confirm-dialog',
+				'title': 'Exit Alert',
+				'content': 'Do you want to exit?',
+				'okText': 'YES',
+				'cancelText': 'NO',
+			}).then(data => data.confirm ? send(JSON.stringify({'action': 'exit'})) : null);
+  }
+
+  function requestToGoBack(){
+    if (window.history.length > 1) {
+      window.history.back();
+      if(currentHistory.length === 1){
+        requestToExit();
+      }
+    } else 
+      requestToExit();
+  }
+	
+  </script>
+</body>
+</html>
