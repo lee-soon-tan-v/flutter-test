@@ -5,7 +5,7 @@
   <title>WebView SPA</title>
 </head>
 <body>
-  Handles the back button and invoke proper exit-app function
+	Handles the back button and invoke proper exit-app function
   <div id="content">Home</div>
 
   <button onclick="navigate('#/banner-1')">Go to Banner 1</button>
@@ -16,28 +16,40 @@
   let currentHistory = [];
   let pendingPromiseRequests = {};
   let currentHistoryLength = 0;
+  let isBackButtonInvoked = false;
   
     function navigate(hash) {
       window.location.hash = hash;
-	  //console.log('push: ' + hash);
     }
 
     function render(data) {
 		// New navigation
-		if(currentHistoryLength != history.length){
+		if(!isBackButtonInvoked){
+      alert(window.location.hash)
 			currentHistoryLength = history.length;
       alert('new');
-      alert('arr len: ' + currentHistory.length);
+      //alert('arr len: ' + currentHistory.length);
 			currentHistory.push(window.location.hash);console.log('push' + window.location.hash)
       alert('arr content: ' + JSON.stringify(currentHistory));
 		}else{
+      // Check for 'HOME' route (HOME -> Other Pages -> Home -> backbutton())
+      if(currentHistory.at(-1) === '#/'){
+				if(currentHistory.at(-2) === '#/') {
+          alert('cond1');
+					currentHistory.pop();
+          requestToExit();
+          isBackButtonInvoked = false;
+				} else {
+          // Redirect back to home
+					window.location.hash = "#/";
+          currentHistory.push('#/');
+				}
+				return;
+			}
       alert('pop');
-      alert('arr len: ' + currentHistory.length);
       currentHistory.pop();
-      alert('arr len: ' + currentHistory.length);
-      alert('arr content: ' + JSON.stringify(currentHistory));
 		}
-      const content = document.getElementById('content');
+    const content = document.getElementById('content');
 
 	  console.log('rendering + ' + window.location.hash);
       switch(window.location.hash) {
@@ -57,15 +69,13 @@
 	
 	//currentHistory.push('#/');
     navigate('#/');
-	
-	//window.addEventListener('popstate', (event) => {console.log(event)});
 
 
 
     // Message send to Flutter
     function send(msg){
       try {
-        alert("Sending: " + msg);
+        //alert("Sending: " + msg);
 	      sendToFlutter.postMessage(msg);
       } catch (e) {
         console.warn("sendToFlutter not available:", e);
@@ -82,7 +92,7 @@
 
     // Message received from Flutter
     function sendToWebView(msg) {
-      alert("Flutter replied: " + JSON.stringify(msg));
+      //alert("Flutter replied: " + JSON.stringify(msg));
 
       if(typeof msg === 'object') {
         if(msg?.action === 'confirm-dialog' && msg?.id){
@@ -105,16 +115,22 @@
 			}).then(data => data.confirm ? send(JSON.stringify({'action': 'exit'})) : null);
   }
 
-  function requestToGoBack(){
+  function backButton(){
+    isBackButtonInvoked = true;
     if (window.history.length > 1) {
       window.history.back();
-      // Condition for Home -> Other Pages -> Home -> BackButton()
+      // Condition for Home -> Other Pages -> BackButton() -> Home -> BackButton()
       if(currentHistory.length === 1){
+        alert('cond3');
         requestToExit();
+        isBackButtonInvoked = false;
       }
-    } else 
+    } else {
       // Condition for Home -> BackButton()
+      alert('cond2');
       requestToExit();
+      isBackButtonInvoked = false;
+    }
   }
 	
   </script>
