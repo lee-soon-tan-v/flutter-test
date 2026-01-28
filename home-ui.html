@@ -133,37 +133,9 @@
                 <span class="text-xs text-gray-400 mb-1">Aug</span>
                 <span class="text-lg font-semibold text-gray-400">2</span>
             </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">3</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">4</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">5</span>
-            </div>
-            <div id='today' class="white flex flex-col items-center px-3 py-2 bg-primary rounded-full min-w-14">
+            <div class="flex flex-col items-center px-3 py-2 bg-primary rounded-full min-w-14">
                 <span class="text-xs text-gray-800 mb-1">Aug</span>
                 <span class="text-lg font-bold text-gray-800">6</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">7</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">8</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">9</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">10</span>
             </div>
         </div>
 	  
@@ -374,19 +346,8 @@
 </body>
 
 <script>
-/*
-let prevScrollLeft = container.scrollLeft
-let el = document.createElement("div");
-      el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
-      el.innerHTML = `
-        <span class="text-xs text-gray-400">55</span>
-        <span class="text-lg font-semibold text-gray-400">12</span>
-      `;
-      container.prepend(el);
-// compensate for new element width
-container.scrollLeft = prevScrollLeft + el.offsetWidth;
-*/
 
+const container = document.getElementById('date-container');
 
 
 function prepend(){
@@ -405,34 +366,52 @@ let el = document.createElement("div");
 		
 }
 
-// Get current month
-const now = new Date();
-const year = now.getFullYear();
-const month = now.getMonth(); // 0-based
 
-const daysInMonth = new Date(year, month + 1, 0).getDate();
+function initDate(){
+	// Get current month
+	const now = new Date();
+	const year = now.getFullYear();
+	const currentDay = now.getDate();
+	const month = now.getMonth(); // 0-based
+	
+	// Set prev, current and next month
+	const daysInPrevMonth = new Date(year, month + 0, 0).getDate();
+	const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+	const daysInNextMonth = new Date(year, month + 2, 0).getDate();
 
-const dates = [];
-
-for (let day = 1; day <= daysInMonth; day++) {
-  dates.push(new Date(year, month, day));
+	for (let day = 1; day <= daysInPrevMonth; day++) {
+	  let date = new Date(year, month - 1, day);
+	  let monthText = date.toLocaleString('default', { month: 'short' });
+	  let elem = createDateItem(day, monthText, date.getTime());
+	  elem.addEventListener('click', _ => highlightDateElem(date.getTime()));
+	  container.append(elem);
+	}
+	for (let day = 1; day <= daysInCurrentMonth; day++) {
+	  let date = new Date(year, month, day);
+	  let monthText = date.toLocaleString('default', { month: 'short' });
+	  let elem = createDateItem(day, monthText, date.getTime());
+	  elem.addEventListener('click', _ => highlightDateElem(date.getTime()));
+	  container.append(elem);
+	}
+	for (let day = 1; day <= daysInNextMonth; day++) {
+	  let date = new Date(year, month + 1, day);
+	  let monthText = date.toLocaleString('default', { month: 'short' });
+	  let elem = createDateItem(day, monthText, date.getTime());
+	  elem.addEventListener('click', _ => highlightDateElem(date.getTime()));
+	  container.append(elem);
+	}
+	
+	// Hightlight current date and scroll into view
+	highlightDateElem((new Date(year, month, currentDay)).getTime());
+	setTimeout(()=>focusDateElem((new Date(year, month, currentDay)).getTime()), 100);
 }
 
-//console.log(dates);
+initDate();
 
 
 
-// Scroll into View
-document.getElementById('today').scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest"
-});
 
-
-let container = document.getElementById('date-container');
-
-
+/*
 setTimeout(()=>{
 	container.addEventListener("scroll", () => {
 	  const { scrollLeft, scrollWidth, clientWidth } = container;
@@ -463,7 +442,57 @@ setTimeout(()=>{
 	  }
   
 	});
-}, 500);
+}, 5000);*/
+
+
+
+function createDateItem(day, month, value) {
+  const el = document.createElement("div");
+  el.setAttribute("date-value", value);
+  el.className = "flex flex-col items-center px-3 py-2";
+
+  const monthEl = document.createElement("span");
+  monthEl.className = "text-xs text-gray-400 mb-1";
+  monthEl.textContent = month;
+
+  const dayEl = document.createElement("span");
+  dayEl.className = "text-lg font-semibold text-gray-400";
+  dayEl.textContent = day;
+
+  el.append(monthEl, dayEl);
+  return el;
+}
+
+function highlightDateElem(dateValue){
+	[...container.children].forEach(elem => {
+		if(elem.getAttribute('date-value') == dateValue){
+			elem.classList.add('bg-primary', 'rounded-full');
+			[...elem.children].forEach(el => {
+				el.classList.remove('text-gray-400');
+				el.classList.add('text-white');
+			});
+		}else{
+			elem.classList.remove('bg-primary', 'rounded-full');
+			[...elem.children].forEach(el => {
+				el.classList.add('text-gray-400');
+				el.classList.remove('text-white');
+			});
+		}
+	})
+}
+
+
+function focusDateElem(dateValue){
+	[...container.children].forEach(elem => {
+		// Scroll into View
+		if(elem.getAttribute('date-value') == dateValue)
+			elem.scrollIntoView({
+					behavior: "smooth",
+					inline: "center",
+					block: "nearest"
+			});
+	});
+}
 
 
 </script>
