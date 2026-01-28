@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diet Meal App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: '#2DD4BF',
+            secondary: '#FEC5D8',
+            dark: '#1F2937',
+          }
+        }
+      }
+    }
+  </script>
+  
+    <style>
+        /* Custom styles for the gauge */
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 100px;
+            overflow: hidden;
+        }
+        .gauge-bg {
+            width: 200px;
+            height: 200px;
+            border-radius: 100px 100px 0 0;
+            background: conic-gradient(
+                from 180deg,
+                #e5e7eb 0deg,
+                #e5e7eb 180deg
+            );
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+        }
+        .gauge-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            border-radius: 100px 100px 0 0;
+            background: conic-gradient(
+                from 180deg,
+                #f97316 0deg,
+                #f97316 140deg,
+                transparent 140deg
+            );
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+        }
+        .gauge-inner {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 160px;
+            height: 160px;
+            border-radius: 80px 80px 0 0;
+            background: white;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+        }
+        
+        /* Chart area gradient */
+        .chart-area {
+            background: linear-gradient(180deg, rgba(251, 146, 150, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
+	
+</head>
+
+<body class="font-poppins">
+  <!-- Phone Container -->
+  <div class="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-hidden">
+    
+    <!-- Main Content -->
+    <div class="px-5 pt-6 pb-24">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4">
+        <button class="w-10 h-10 flex items-center justify-center">
+          <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <p class="text-gray-500 text-sm">Hi, Good noon</p>
+        <button class="w-10 h-10 flex items-center justify-center relative">
+          <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+          </svg>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+        </button>
+      </div>
+
+      <!-- Main Heading -->
+      <h1 class="text-2xl font-bold text-dark leading-tight mb-5">
+        Daily goal
+      </h1>
+
+      <!-- Date Selector -->
+      <div class="flex items-center ga1p-3 px-4 py-4 overflow-x-auto" id="date-container">
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">1</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">2</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">3</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">4</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">5</span>
+            </div>
+            <div id='today' class="white flex flex-col items-center px-3 py-2 bg-primary rounded-full min-w-14">
+                <span class="text-xs text-gray-800 mb-1">Aug</span>
+                <span class="text-lg font-bold text-gray-800">6</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">7</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">8</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">9</span>
+            </div>
+            <div class="flex flex-col items-center px-3 py-2">
+                <span class="text-xs text-gray-400 mb-1">Aug</span>
+                <span class="text-lg font-semibold text-gray-400">10</span>
+            </div>
+        </div>
+	  
+	  
+        <!-- Calorie Gauge Section -->
+        <div class="flex flex-col items-center py-4 relative">
+            <!-- Gauge -->
+            <div class="gauge-container">
+                <div class="gauge-bg"></div>
+                <div class="gauge-fill"></div>
+                <div class="gauge-inner"></div>
+                
+                <!-- Gauge Text -->
+                <div class="absolute inset-0 flex flex-col items-center justify-end pb-2">
+                    <span class="text-3xl font-bold text-navy">1721 Kcal</span>
+                    <span class="text-xs text-gray-400">of 2213 kcal</span>
+                </div>
+            </div>
+        
+            <!-- Macro Nutrients -->
+            <div class="flex justify-center gap-8 py-4 border-b border-gray-100 mx-5">
+                <div class="text-center">
+                    <p class="text-sm font-medium text-navy">Protein</p>
+                    <p class="text-xs text-gray-400 mt-1">78/90g</p>
+                </div>
+                <div class="text-center border-l border-r border-gray-200 px-8">
+                    <p class="text-sm font-medium text-navy">Fats</p>
+                    <p class="text-xs text-gray-400 mt-1">45/70g</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm font-medium text-navy">Carbs</p>
+                    <p class="text-xs text-gray-400 mt-1">95/110g</p>
+                </div>
+            </div>
+        </div>
+		
+		
+
+    <!-- Category Tabs -->
+<div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+  <button
+    aria-selected="true"
+    class="px-4 py-2 bg-gray-900 text-white text-xs font-medium rounded-full whitespace-nowrap"
+  >
+    All
+  </button>
+
+  <button
+    aria-selected="false"
+    class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap"
+  >
+    Breakfast
+  </button>
+
+  <button
+    aria-selected="false"
+    class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap"
+  >
+    Lunch
+  </button>
+
+  <button
+    aria-selected="false"
+    class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap"
+  >
+    Dinner
+  </button>
+
+  <button
+    aria-selected="false"
+    class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap"
+  >
+    Snacks
+  </button>
+</div>
+
+	  
+	  
+	  
+
+      <!-- High Calories Foods Section -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-dark">High calories foods</h2>
+          <button class="text-xs text-gray-400">View more &gt;</button>
+        </div>
+
+        <!-- Food Cards -->
+        <div class="flex gap-4 overflow-x-auto pb-2">
+          <!-- Card 1 - Sliced Meat -->
+          <div class="flex-shrink-0 w-40">
+            <div class="bg-pink-100 rounded-2xl p-4 mb-2 relative overflow-hidden">
+              <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white shadow-md">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop" alt="Sliced meat" class="w-full h-full object-cover">
+              </div>
+            </div>
+            <h3 class="text-sm font-semibold text-dark mb-0.5">Sliced meat</h3>
+            <p class="text-xs text-gray-400 mb-1">sliced meat and potatoes</p>
+            <p class="text-xs font-semibold text-primary">700.2 Kcal</p>
+          </div>
+
+          <!-- Card 2 - Grilled Lamb -->
+          <div class="flex-shrink-0 w-40">
+            <div class="bg-cyan-100 rounded-2xl p-4 mb-2 relative overflow-hidden">
+              <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white shadow-md">
+                <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop" alt="Grilled lamb" class="w-full h-full object-cover">
+              </div>
+            </div>
+            <h3 class="text-sm font-semibold text-dark mb-0.5">Grilled lamb</h3>
+            <p class="text-xs text-gray-400 mb-1">Italian cuisine Pizza</p>
+            <p class="text-xs font-semibold text-primary">402.05 Kcal</p>
+          </div>
+
+          <!-- Card 3 - Extra (partially visible) -->
+          <div class="flex-shrink-0 w-40">
+            <div class="bg-pink-100 rounded-2xl p-4 mb-2 relative overflow-hidden">
+              <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white shadow-md">
+                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&h=200&fit=crop" alt="Salmon" class="w-full h-full object-cover">
+              </div>
+            </div>
+            <h3 class="text-sm font-semibold text-dark mb-0.5">Fresh salmon</h3>
+            <p class="text-xs text-gray-400 mb-1">Grilled salmon fillet</p>
+            <p class="text-xs font-semibold text-primary">520.8 Kcal</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Diet Stats Section -->
+      <div>
+        <h2 class="text-lg font-semibold text-dark mb-4">Daily diet Stats</h2>
+        
+        <div class="flex gap-4">
+          <!-- Daily Calories Card -->
+          <div class="flex-1 bg-cyan-50 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-3">Daily calories</p>
+            <div class="flex items-end justify-center gap-1 h-20 mb-3">
+              <div class="w-3 bg-cyan-200 rounded-t-sm" style="height: 40%"></div>
+              <div class="w-3 bg-cyan-200 rounded-t-sm" style="height: 60%"></div>
+              <div class="w-3 bg-cyan-200 rounded-t-sm" style="height: 45%"></div>
+              <div class="w-3 bg-cyan-300 rounded-t-sm" style="height: 80%"></div>
+              <div class="w-3 bg-cyan-200 rounded-t-sm" style="height: 55%"></div>
+              <div class="w-3 bg-cyan-200 rounded-t-sm" style="height: 70%"></div>
+              <div class="w-3 bg-cyan-400 rounded-t-sm" style="height: 95%"></div>
+            </div>
+            <p class="text-lg font-bold text-dark">2070.99</p>
+          </div>
+
+          <!-- Calories to Eat Card -->
+          <div class="flex-1 bg-pink-50 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-3">Calories to eat</p>
+            <div class="flex items-end justify-center gap-1 h-20 mb-3">
+              <div class="w-3 bg-pink-200 rounded-t-sm" style="height: 30%"></div>
+              <div class="w-3 bg-pink-200 rounded-t-sm" style="height: 50%"></div>
+              <div class="w-3 bg-pink-200 rounded-t-sm" style="height: 35%"></div>
+              <div class="w-3 bg-pink-300 rounded-t-sm" style="height: 65%"></div>
+              <div class="w-3 bg-pink-200 rounded-t-sm" style="height: 45%"></div>
+              <div class="w-3 bg-pink-200 rounded-t-sm" style="height: 55%"></div>
+              <div class="w-3 bg-pink-400 rounded-t-sm" style="height: 75%"></div>
+            </div>
+            <p class="text-lg font-bold text-dark">400.98</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3">
+      <div class="flex items-center justify-between">
+        <!-- Home -->
+        <button class="flex flex-col items-center gap-1">
+          <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+        </button>
+
+        <!-- Favorites -->
+        <button class="flex flex-col items-center gap-1">
+          <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+        </button>
+
+        <!-- Add Button -->
+        <button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 -mt-8">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+
+        <!-- Stats -->
+        <button class="flex flex-col items-center gap-1">
+          <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </button>
+
+        <!-- Profile -->
+        <button class="flex flex-col items-center gap-1">
+          <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+<script>
+/*
+let prevScrollLeft = container.scrollLeft
+let el = document.createElement("div");
+      el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
+      el.innerHTML = `
+        <span class="text-xs text-gray-400">55</span>
+        <span class="text-lg font-semibold text-gray-400">12</span>
+      `;
+      container.prepend(el);
+// compensate for new element width
+container.scrollLeft = prevScrollLeft + el.offsetWidth;
+*/
+
+
+
+function prepend(){
+	
+	let prevScrollLeft = container.scrollLeft;
+	
+let el = document.createElement("div");
+      el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
+      el.innerHTML = `
+        <span class="text-xs text-gray-400">55</span>
+        <span class="text-lg font-semibold text-gray-400">12</span>
+      `;
+	container.prepend(el);
+	// compensate for new element width
+	container.scrollLeft = prevScrollLeft + el.offsetWidth;
+		
+}
+
+// Get current month
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth(); // 0-based
+
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+const dates = [];
+
+for (let day = 1; day <= daysInMonth; day++) {
+  dates.push(new Date(year, month, day));
+}
+
+//console.log(dates);
+
+
+
+// Scroll into View
+document.getElementById('today').scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest"
+});
+
+
+let container = document.getElementById('date-container');
+
+
+setTimeout(()=>{
+	container.addEventListener("scroll", () => {
+	  const { scrollLeft, scrollWidth, clientWidth } = container;
+	  
+	  // if user scrolls close to left edge, prepend 5 days
+	  if (scrollLeft <= 50) {
+		let el = document.createElement("div");
+			  el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
+			  el.innerHTML = `
+				<span class="text-xs text-gray-400">55</span>
+				<span class="text-lg font-semibold text-gray-400">12</span>
+			  `;
+		container.prepend(el);
+		// compensate for new element width
+		container.scrollLeft = scrollLeft + el.offsetWidth;
+	  }
+	  
+	  
+	  // if user scrolls close to right edge, append next 5 days
+	  if (scrollLeft + clientWidth >= scrollWidth - 50) {
+		let el = document.createElement("div");
+			  el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
+			  el.innerHTML = `
+				<span class="text-xs text-gray-400">55</span>
+				<span class="text-lg font-semibold text-gray-400">12</span>
+			  `;
+		container.append(el);
+	  }
+  
+	});
+}, 500);
+
+
+</script>
+</html>
