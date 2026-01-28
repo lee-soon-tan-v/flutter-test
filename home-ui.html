@@ -74,6 +74,23 @@
         .chart-area {
             background: linear-gradient(180deg, rgba(251, 146, 150, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
         }
+		
+		/* Chrome, Edge, Safari */
+		.hide-scrollbar::-webkit-scrollbar {
+		  display: none;
+		}
+
+		/* Firefox */
+		.hide-scrollbar {
+		  scrollbar-width: none;
+		}
+
+		/* IE / old Edge */
+		.hide-scrollbar {
+		  -ms-overflow-style: none;
+		}
+
+
     </style>
 	
 </head>
@@ -107,7 +124,7 @@
       </h1>
 
       <!-- Date Selector -->
-      <div class="flex items-center ga1p-3 px-4 py-4 overflow-x-auto" id="date-container">
+      <div class="flex items-center ga1p-3 px-4 py-4 overflow-x-auto hide-scrollbar" id="date-container">
             <div class="flex flex-col items-center px-3 py-2">
                 <span class="text-xs text-gray-400 mb-1">Aug</span>
                 <span class="text-lg font-semibold text-gray-400">1</span>
