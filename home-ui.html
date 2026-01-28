@@ -125,18 +125,6 @@
 
       <!-- Date Selector -->
       <div class="flex items-center ga1p-3 px-4 py-4 overflow-x-auto hide-scrollbar" id="date-container">
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">1</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2">
-                <span class="text-xs text-gray-400 mb-1">Aug</span>
-                <span class="text-lg font-semibold text-gray-400">2</span>
-            </div>
-            <div class="flex flex-col items-center px-3 py-2 bg-primary rounded-full min-w-14">
-                <span class="text-xs text-gray-800 mb-1">Aug</span>
-                <span class="text-lg font-bold text-gray-800">6</span>
-            </div>
         </div>
 	  
 	  
@@ -350,20 +338,38 @@
 const container = document.getElementById('date-container');
 
 
-function prepend(){
-	
+function prependDate(){
 	let prevScrollLeft = container.scrollLeft;
 	
-let el = document.createElement("div");
-      el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
-      el.innerHTML = `
-        <span class="text-xs text-gray-400">55</span>
-        <span class="text-lg font-semibold text-gray-400">12</span>
-      `;
+	let timestamp = parseInt(container.children[0].getAttribute('date-value'));
+	
+	if(!timestamp) return;
+	
+	timestamp -= 24*60*60*1000;
+	
+	let date = new Date(timestamp);
+	
+	let monthText = date.toLocaleString('default', { month: 'short' });
+	let el = createDateItem(date.getDate(), monthText, timestamp);
+	el.addEventListener('click', _ => highlightDateElem(date.getTime()));
+	
 	container.prepend(el);
-	// compensate for new element width
 	container.scrollLeft = prevScrollLeft + el.offsetWidth;
-		
+}
+function appendDate(){
+	let timestamp = parseInt(container.children[container.children.length-1].getAttribute('date-value'));
+	
+	if(!timestamp) return;
+	
+	timestamp += 24*60*60*1000;
+	
+	let date = new Date(timestamp);
+	
+	let monthText = date.toLocaleString('default', { month: 'short' });
+	let el = createDateItem(date.getDate(), monthText, timestamp);
+	el.addEventListener('click', _ => highlightDateElem(date.getTime()));
+
+	container.append(el);
 }
 
 
@@ -403,53 +409,33 @@ function initDate(){
 	
 	// Hightlight current date and scroll into view
 	highlightDateElem((new Date(year, month, currentDay)).getTime());
-	setTimeout(()=>focusDateElem((new Date(year, month, currentDay)).getTime()), 100);
+	setTimeout(()=>focusDateElem((new Date(year, month, currentDay)).getTime()), 200);
 }
 
 initDate();
 
 
-
-
-/*
 setTimeout(()=>{
 	container.addEventListener("scroll", () => {
 	  const { scrollLeft, scrollWidth, clientWidth } = container;
-	  
 	  // if user scrolls close to left edge, prepend 5 days
 	  if (scrollLeft <= 50) {
-		let el = document.createElement("div");
-			  el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
-			  el.innerHTML = `
-				<span class="text-xs text-gray-400">55</span>
-				<span class="text-lg font-semibold text-gray-400">12</span>
-			  `;
-		container.prepend(el);
-		// compensate for new element width
-		container.scrollLeft = scrollLeft + el.offsetWidth;
+		prependDate();
 	  }
-	  
 	  
 	  // if user scrolls close to right edge, append next 5 days
 	  if (scrollLeft + clientWidth >= scrollWidth - 50) {
-		let el = document.createElement("div");
-			  el.className = "flex flex-col items-center px-3 py-2 min-w-14 snap-center";
-			  el.innerHTML = `
-				<span class="text-xs text-gray-400">55</span>
-				<span class="text-lg font-semibold text-gray-400">12</span>
-			  `;
-		container.append(el);
+		appendDate();
 	  }
-  
 	});
-}, 5000);*/
+}, 1500);
 
 
 
 function createDateItem(day, month, value) {
   const el = document.createElement("div");
   el.setAttribute("date-value", value);
-  el.className = "flex flex-col items-center px-3 py-2";
+  el.className = "flex flex-col items-center px-5 py-2";
 
   const monthEl = document.createElement("span");
   monthEl.className = "text-xs text-gray-400 mb-1";
