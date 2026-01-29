@@ -6,21 +6,20 @@
 		<title>CaloriCam</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-		<style>
-		</style>  
+		<style></style>
 		<script>
 			tailwind.config = {
-			  theme: {
-				extend: {
-				  colors: {
-					cyan: {
-					  400: '#8cc9c8',
-					  500: '#00c4c4',
-					  600: '#00b3b3',
+				theme: {
+					extend: {
+						colors: {
+							cyan: {
+								400: '#8cc9c8',
+								500: '#00c4c4',
+								600: '#00b3b3',
+							}
+						}
 					}
-				  }
 				}
-			  }
 			}
 		</script>
 	</head>
@@ -193,31 +192,21 @@
 						</div>
 					</div>
 				</div>
-					<!-- Category Tabs -->
+				<!-- Category Tabs -->
 				<div class='py-2 px-4'>
-				  <div class="flex items-center gap-2 overflow-x-auto pb-2">
-					<button class="px-4 py-2 bg-cyan-400 text-white text-xs font-medium rounded-full whitespace-nowrap">
-					  All
-					</button>
-					<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap">
-					  Breakfast
-					</button>
-					<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap">
-					  Lunch
-					</button>
-					<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap">
-					  Snack
-					</button>
-				  </div>
+					<div class="flex items-center gap-2 overflow-x-auto pb-2">
+						<button class="px-4 py-2 bg-cyan-400 text-white text-xs font-medium rounded-full whitespace-nowrap"> All </button>
+						<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap"> Breakfast </button>
+						<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap"> Lunch </button>
+						<button class="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap"> Snack </button>
+					</div>
 				</div>
-				
 				<!-- Food Items List -->
 				<div class="px-4 py-2 space-y-3">
 					<div class="flex items-center justify-between mb-3">
-					  <h2 class="text-lg font-semibold">Breakfast</h2>
-					  <span class="text-sm text-gray-400">588 kcal</span>
+						<h2 class="text-lg font-semibold">Breakfast</h2>
+						<span class="text-sm text-gray-400">588 kcal</span>
 					</div>
-
 					<!-- Food Item 1 - Salad with eggs -->
 					<div class="bg-amber-50 rounded-2xl p-4 flex items-center gap-4">
 						<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-white">
@@ -321,7 +310,7 @@
 						</div>
 					</div>
 					<div class="flex items-center justify-between mb-4">
-					  <h2 class="text-lg font-semibold text-dark">Lunch</h2>
+						<h2 class="text-lg font-semibold text-dark">Lunch</h2>
 					</div>
 					<!-- Food Item 3 - Pancakes -->
 					<div class="bg-orange-50 rounded-2xl p-4 flex items-center gap-4">
@@ -418,13 +407,12 @@
 							<path d="M8 17v-3" />
 						</svg>
 					</button>
-				
-                <!-- Add Button (Center) -->
-                <button class="w-14 h-14 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/30 -mt-8">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </button>
+					<!-- Add Button (Center) -->
+					<button onclick="openModal()" class="w-14 h-14 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/30 -mt-8">
+						<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+						</svg>
+					</button>
 					<!-- Chat Button -->
 					<button class="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-gray-100">
 						<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -439,6 +427,60 @@
 					</button>
 				</div>
 			</div>
+			<!-- Food Check-In Modal -->
+			<div id="checkin-modal" class="fixed inset-0 bg-black/40 flex items-end justify-center hidden z-50">
+				<div class="bg-white w-full rounded-t-3xl p-6 space-y-6 max-h-[60%] overflow-y-auto">
+					<!-- Header -->
+					<div class="flex items-center justify-between">
+						<h2 class="text-lg font-semibold text-gray-800">Add Food</h2>
+						<button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<line x1="18" y1="6" x2="6" y2="18" />
+								<line x1="6" y1="6" x2="18" y2="18" />
+							</svg>
+						</button>
+					</div>
+					<!-- Check-In Options -->
+					<div class="grid grid-cols-3 gap-4 text-center">
+						<!-- Manual Entry -->
+						<button class="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-2xl hover:bg-gray-200">
+							<svg class="w-8 h-8 mb-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<path d="M12 20h9" />
+								<path d="M12 4h9" />
+								<path d="M4 4h.01" />
+								<path d="M4 20h.01" />
+							</svg>
+							<span class="text-sm font-medium text-gray-700">Manual</span>
+						</button>
+						<!-- Photo Upload -->
+						<button class="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-2xl hover:bg-gray-200">
+							<svg class="w-8 h-8 mb-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<path d="M3 7h4l2-3h6l2 3h4v12H3V7z" />
+								<circle cx="12" cy="13" r="4" />
+							</svg>
+							<span class="text-sm font-medium text-gray-700">Photo</span>
+						</button>
+						<!-- Barcode Scan -->
+						<button class="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-2xl hover:bg-gray-200">
+							<svg class="w-8 h-8 mb-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<path d="M2 3h2v18H2V3zM6 3h2v18H6V3zM10 3h2v18h-2V3zM14 3h2v18h-2V3zM18 3h2v18h-2V3z" />
+							</svg>
+							<span class="text-sm font-medium text-gray-700">Scan</span>
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
+	<script>
+		const modal = document.getElementById('checkin-modal');
+
+		function openModal() {
+			modal.classList.remove('hidden');
+		}
+
+		function closeModal() {
+			modal.classList.add('hidden');
+		}
+	</script>
 </html>
