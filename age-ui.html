@@ -24,19 +24,18 @@
 <body>
   <!-- Full screen container with dark background -->
 <div class="bg-gray-900 overflow-hidden">
-
 	<!-- Main content wrapper (kept above any background effects) -->
 	<div class="relative z-10 flex flex-col min-h-screen p-8">
 		<!-- Header / Intro text -->
 		<div class="mt-8 space-y-1">
-			<p class="text-gray-400 text-xs font-semibold tracking-[0.2em] uppercase mb-2"> Hey Buddy! </p>
+			<p class="text-gray-400 text-xs font-semibold tracking-[0.2em] uppercase mb-2"> Hey Buddy!1 </p>
 			<h1 class="text-white text-3xl font-bold tracking-wide"> Tell Us About You </h1>
 			<p class="text-gray-400 text-xs md:text-base"> This helps us calculate your daily calorie needs accurately. </p>
 		</div>
 		<!-- Scrollable content area -->
-		<div class="flex flex-1 flex-col overflow-auto p1b-24">
+		<div class="flex flex-1 flex-col overflow-auto">
 			<!-- Centered form section -->
-			<div class="flex-1 flex items-center justify-around mt-2 m1b-24">
+			<div class="flex-1 flex items-center justify-around mt-2 mb1-24">
 				<!-- Form container -->
 				<div class="space-y-6 max-w-md mx-auto w-full">
 					<!-- Age input -->
@@ -75,14 +74,14 @@
 			<!-- Fixed bottom navigation buttons -->
 			<div class="sticky bottom-0 h-16 flex items-center justify-center gap-4 w-full px-8 bg-gray-900">
 				<div class="max-w-md w-full flex justify-center">
-					<!-- Back button -->
-					<button id="back" type="button" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white/80 font-medium py-4 rounded-full
-					 border border-gray-700 transition-all duration-200 transform active:scale-95
-					 uppercase tracking-wider text-sm mr-4"> ← </button>
-					<!-- Continue button -->
-					<button id="continue" type="button" class="flex-[2] bg-cyan-400 hover:bg-cyan-500 text-white font-bold py-4 rounded-full
-					 transition-all duration-200 transform active:scale-95
-					 uppercase tracking-wider text-sm opacity-50 pointer-events-none"> Continue </button>
+				<!-- Back button -->
+				<button id="back-button" type="button" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white/80 font-medium py-4 rounded-full
+                 border border-gray-700 transition-all duration-200 transform active:scale-95
+                 uppercase tracking-wider text-sm mr-4"> Back </button>
+				<!-- Continue button -->
+				<button id="continue-button" type="button" class="flex-[2] bg-cyan-400 hover:bg-cyan-500 text-white font-bold py-4 rounded-full
+                 transition-all duration-200 transform active:scale-95
+                 uppercase tracking-wider text-sm opacity-50 pointer-events-none"> Continue </button>
 				</div>
 			</div>
 		</div>
