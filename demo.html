@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keyboard Resize Demo</title>
+
+  <style>
+    :root {
+      --keyboard-height: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #111827;
+      color: white;
+    }
+
+    /* App layout */
+    .app {
+      min-height: 100dvh; /* 👈 critical */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollable content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .content p {
+      margin-bottom: 16px;
+      color: #9ca3af;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    /* Sticky footer */
+    .footer {
+      position: sticky;
+      bottom: 0;
+      background: #1f2937;
+      padding: 16px;
+      text-align: center;
+
+      /* 👇 move up when keyboard opens */
+      transform: translateY(calc(-1 * var(--keyboard-height)));
+      transition: transform 0.15s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <div class="content">
+      <h1>Keyboard Layout Demo</h1>
+
+      <!-- filler content -->
+      <p>Scroll down and tap the input.</p>
+      <p>Lorem ipsum dolor sit amet.</p>
+      <p>Keep scrolling…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+
+      <input placeholder="Tap me to open keyboard" />
+
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+    </div>
+
+    <div class="footer">
+      Sticky Footer
+    </div>
+  </div>
+
+  <script>
+    if (window.visualViewport) {
+      const vv = window.visualViewport;
+
+      function updateKeyboardHeight() {
+        const keyboardHeight =
+          window.innerHeight - vv.height - vv.offsetTop;
+
+        document.documentElement.style.setProperty(
+          '--keyboard-height',
+          `${Math.max(0, keyboardHeight)}px`
+        );
+      }
+
+      vv.addEventListener('resize', updateKeyboardHeight);
+      vv.addEventListener('scroll', updateKeyboardHeight);
+    }
+  </script>
+
+</body>
+</html>
