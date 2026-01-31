@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Keyboard-safe Sticky Footer</title>
+  <title>Android Keyboard Safe Layout</title>
 
   <style>
     * {
@@ -18,13 +18,12 @@
     }
 
     .app {
-      min-height: 100dvh; /* 👈 magic */
+      height: 100vh; /* fallback */
       display: flex;
       flex-direction: column;
     }
 
     .content {
-      flex: 1;
       overflow-y: auto;
       padding: 16px;
     }
@@ -49,11 +48,10 @@
 <body>
 
   <div class="app">
-    <div class="content">
-      <h1>Keyboard Demo</h1>
+    <div class="content" id="content">
+      <h1>Android Keyboard Demo</h1>
 
-      <p>Scroll down and tap the input.</p>
-      <p>More content…</p>
+      <p>Scroll and tap input.</p>
       <p>More content…</p>
       <p>More content…</p>
       <p>More content…</p>
@@ -63,12 +61,50 @@
       <p>More content…</p>
       <p>More content…</p>
       <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
+      <p>More content…</p>
     </div>
 
     <div class="footer">
-      Footer stays put 🧘
+      Footer does NOT move
     </div>
   </div>
+
+  <script>
+    const content = document.getElementById('content');
+
+    function resizeContent() {
+      const viewportHeight = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+
+      const footerHeight =
+        document.querySelector('.footer').offsetHeight;
+
+      content.style.height =
+        (viewportHeight - footerHeight) + 'px';
+    }
+
+    resizeContent();
+
+    if (window.visualViewport) {
+      visualViewport.addEventListener('resize', resizeContent);
+    } else {
+      window.addEventListener('resize', resizeContent);
+    }
+  </script>
 
 </body>
 </html>
